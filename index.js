@@ -12,20 +12,20 @@ class Question {
 function findQuestions(text) {
     text = text.replace(/\r/g, '');
     let rawQuestion;
-    const regex = new RegExp('\\d+\\.([\\s\\S]*?)(?:A\\n)([\\s\\S]*?)(?:B\\n)([\\s\\S]*?)(?:C\\n)([\\s\\S]*?)(?:D\\n)([\\s\\S]*?)(?:E\\n)([\\s\\S]*?)(?:\\n\\n)', 'g');
+    const regex = new RegExp('\\d+\\.([\\s\\S]*?)(?:A\\n)([\\s\\S]*?)(?:B\\n)([\\s\\S]*?)(?:C\\n)([\\s\\S]*?)(?:D\\n)([\\s\\S]*?)(?:E\\n)([\\s\\S]*?)', 'g');
     const rawQuestions = text.matchAll(regex);
     const questions = [];
 
     for (rawQuestion of rawQuestions) {
         let question = new Question();
-        question.text = rawQuestion[1].replace(/\t/g, '').replace(/\n\n/g, '').replace(/^\n/g, '').replace(/\n$/g, '')
+        question.text = rawQuestion[1].replace(/^\n/,'').replace(/\n$/,'')
         for (let i = 2; i < 7; i++) {
-            let questionText = rawQuestion[i].replace(/[\t]/g, '').replace(/^\n/g, '')
+            let questionText = rawQuestion[i]
             questionText.split(/\n/g).forEach((line) => {
                 if (/[xX]$/g.test(line))
                     question.correct.push(i - 2);
             });
-            question.answers.push(questionText.replace(/\n+[xX]*\n*/, ''))
+            question.answers.push(questionText.replace(/\n+[xX]*\n*$/, ''))
         }
         questions.push(question);
     }
@@ -39,7 +39,11 @@ function writeOutputFile(questions, fileName) {
         outString += question.text + '\n\n';
         for (let i = 0; i < question.answers.length; i++) {
             if (question.answers[i]) {
-                outString += '* ' + question.answers[i] + (question.correct.includes(i) ? ' x\n' : '\n')
+                outString += `* ${question.answers[i]} `
+                if (question.correct.includes(i)) {
+                    outString += 'x'
+                }
+                outString += '\n';
             }
         }
         outString += '\n\n'
@@ -49,9 +53,19 @@ function writeOutputFile(questions, fileName) {
     })
 }
 
+function prepareFile(text){
+    // Remove tabs
+    text = text.replace(/\t/g,'');
+    // Remove more than 1 newline - also convert from crlf to lf
+    text = text.replace(/(\r*\n){2,}/g,'\n');
+
+    return text;
+}
+
 function readFile(entry) {
     fs.readFile('in/' + entry, {encoding: "utf8"}, (err, content) => {
-        const questions = findQuestions(content);
+        const prepared = prepareFile(content);
+        const questions = findQuestions(prepared);
         writeOutputFile(questions, entry);
     });
 }

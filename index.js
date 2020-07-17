@@ -12,20 +12,25 @@ class Question {
 function findQuestions(text) {
     text = text.replace(/\r/g, '');
     let rawQuestion;
-    const regex = new RegExp('\\d+\\.([\\s\\S]*?)(?:A\\n)([\\s\\S]*?)(?:B\\n)([\\s\\S]*?)(?:C\\n)([\\s\\S]*?)(?:D\\n)([\\s\\S]*?)(?:E\\n)([\\s\\S]*?)(?:\\n[xX]\\n)?', 'g');
+    const regex = new RegExp('\\d+\\.([\\s\\S]*?)(?:A\\n)([\\s\\S]*?)(?:B\\n)([\\s\\S]*?)(?:C\\n)([\\s\\S]*?)(?:D\\n)([\\s\\S]*?)(?:E\\n)(\\D[\\s\\S]+?\\n([xX]\\n)?)?', 'g');
     const rawQuestions = text.matchAll(regex);
     const questions = [];
 
     for (rawQuestion of rawQuestions) {
         let question = new Question();
-        question.text = rawQuestion[1].replace(/^\n/,'').replace(/\n$/,'')
+        question.text = rawQuestion[1].replace(/^\n/, '').replace(/\n$/, '')
+        debugger;
         for (let i = 2; i < 7; i++) {
             let questionText = rawQuestion[i]
-            questionText.split(/\n/g).forEach((line) => {
-                if (/[xX]$/g.test(line))
-                    question.correct.push(i - 2);
-            });
-            question.answers.push(questionText.replace(/\n+[xX]*\n*$/, ''))
+
+            if (questionText) {
+
+                questionText.split(/\n/g).forEach((line) => {
+                    if (/[xX]$/g.test(line))
+                        question.correct.push(i - 2);
+                });
+                question.answers.push(questionText.replace(/\n+[xX]*\n*$/, ''))
+            }
         }
         questions.push(question);
     }
@@ -53,13 +58,13 @@ function writeOutputFile(questions, fileName) {
     })
 }
 
-function prepareFile(text){
+function prepareFile(text) {
     // Remove tabs
-    text = text.replace(/\t/g,'');
+    text = text.replace(/\t/g, '');
     // Remove [a] google comment annotations
-    text = text.replace(/(\[\S{1,2}])/g,'')
+    text = text.replace(/(\[\S{1,2}])/g, '')
     // Remove more than 1 newline - also convert from crlf to lf
-    text = text.replace(/(\r*\n){2,}/g,'\n');
+    text = text.replace(/(\r*\n){2,}/g, '\n');
     return text;
 }
 

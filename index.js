@@ -19,7 +19,7 @@ function findQuestions(text){
 
   for(rawQuestion of rawQuestions){
     let question = new Question();
-    question.text = rawQuestion[1].replace(/[\t\n]/g,'');
+    question.text = rawQuestion[1].replace(/\t/g,'').replace(/\n\n/g,'');
     for(let i = 2; i < 7; i++){
       let questionText = rawQuestion[i].replace(/[\t]/g,'')
       questionText.split(/\n/g).forEach((line) => {

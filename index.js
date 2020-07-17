@@ -12,7 +12,7 @@ class Question {
 function findQuestions(text) {
     text = text.replace(/\r/g, '');
     let rawQuestion;
-    const regex = new RegExp('\\d+\\.([\\s\\S]*?)(?:A\\n)([\\s\\S]*?)(?:B\\n)([\\s\\S]*?)(?:C\\n)([\\s\\S]*?)(?:D\\n)([\\s\\S]*?)(?:E\\n)([\\s\\S]*?)', 'g');
+    const regex = new RegExp('\\d+\\.([\\s\\S]*?)(?:A\\n)([\\s\\S]*?)(?:B\\n)([\\s\\S]*?)(?:C\\n)([\\s\\S]*?)(?:D\\n)([\\s\\S]*?)(?:E\\n)([\\s\\S]*?)(?:\\n[xX]\\n)?', 'g');
     const rawQuestions = text.matchAll(regex);
     const questions = [];
 
@@ -56,9 +56,10 @@ function writeOutputFile(questions, fileName) {
 function prepareFile(text){
     // Remove tabs
     text = text.replace(/\t/g,'');
+    // Remove [a] google comment annotations
+    text = text.replace(/(\[\S{1,2}])/g,'')
     // Remove more than 1 newline - also convert from crlf to lf
     text = text.replace(/(\r*\n){2,}/g,'\n');
-
     return text;
 }
 

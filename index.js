@@ -1,8 +1,6 @@
 'use strict'
 const fs = require('fs');
 
-// \d+.([\s\S]+?)(?:A\n)([\s\S]+?)(?:B\n)([\s\S]+?)(?:C\n)([\s\S]+?)(?:D\n)([\s\S]+?)(?:E\n)([\s\S]+?)(?:\n\n)
-
 class Question {
     constructor(data = {}) {
         this.text = data.text || '';

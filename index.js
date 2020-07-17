@@ -11,9 +11,9 @@ class Question {
 }
 
 function findQuestions(text){
-  text = text.replace(/\r/g,'')
+  text = text.replace(/\r/g,'');
   let rawQuestion;
-  const regex = new RegExp('\\d+\\.([\\s\\S]+?)(?:A\\n)([\\s\\S]+?)(?:B\\n)([\\s\\S]+?)(?:C\\n)([\\s\\S]+?)(?:D\\n)([\\s\\S]+?)(?:E\\n)([\\s\\S]+?)(?:\\n\\n)','g');
+  const regex = new RegExp('\\d+\\.([\\s\\S]*?)(?:A\\n)([\\s\\S]*?)(?:B\\n)([\\s\\S]*?)(?:C\\n)([\\s\\S]*?)(?:D\\n)([\\s\\S]*?)(?:E\\n)([\\s\\S]*?)(?:\\n\\n)','g');
   const rawQuestions = text.matchAll(regex);
   const questions = [];
 
@@ -22,7 +22,6 @@ function findQuestions(text){
     question.text = rawQuestion[1].replace(/[\t\n]/g,'');
     for(let i = 2; i < 7; i++){
       let questionText = rawQuestion[i].replace(/[\t]/g,'')
-
       questionText.split(/\n/g).forEach((line) => {
         if(/[xX]$/g.test(line))
           question.correct = i - 2

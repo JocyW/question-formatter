@@ -9,6 +9,22 @@ class Question {
     }
 }
 
+function findAnswers(rawQuestion, question) {
+    let answerId = 0;
+    for (let i = 2; i < 7; i++) {
+        let questionText = rawQuestion[i]
+
+        if (questionText) {
+            questionText.split(/\n/g).forEach((line) => {
+                if (/^[Xx]$/g.test(line))
+                    question.correct.push(answerId);
+            });
+            question.answers.push(questionText.replace(/\n+[xX]*\n*$/, ''))
+            answerId++;
+        }
+    }
+}
+
 function findQuestions(text) {
     text = text.replace(/\r/g, '');
     let rawQuestion;
@@ -18,26 +34,15 @@ function findQuestions(text) {
 
     for (rawQuestion of rawQuestions) {
         let question = new Question();
-        question.text = rawQuestion[1].replace(/^\n/, '').replace(/\n$/, '')
-        let answerId = 0;
-        for (let i = 2; i < 7; i++) {
-            let questionText = rawQuestion[i]
+        question.text = rawQuestion[1].replace(/^\n/, '').replace(/\n$/, '');
+        findAnswers(rawQuestion, question);
 
-            if (questionText) {
-                questionText.split(/\n/g).forEach((line) => {
-                    if (/^[Xx]$/g.test(line))
-                        question.correct.push(answerId);
-                });
-                question.answers.push(questionText.replace(/\n+[xX]*\n*$/, ''))
-                answerId++;
-            }
-        }
         questions.push(question);
     }
     return questions;
 }
 
-function writeOutputFile(questions, fileName) {
+function createOutputString(questions) {
     let outString = '';
 
     questions.forEach((question) => {
@@ -53,9 +58,6 @@ function writeOutputFile(questions, fileName) {
         }
         outString += '\n\n'
     });
-    debugger;
-    fs.writeFile('out/Formatted-' + fileName, outString, (err) => {
-    })
 }
 
 function prepareFile(text) {
@@ -78,7 +80,9 @@ function readFile(entry) {
     fs.readFile('in/' + entry, {encoding: "utf8"}, (err, content) => {
         const prepared = prepareFile(content);
         const questions = findQuestions(prepared);
-        writeOutputFile(questions, entry);
+        const outString = createOutputString(questions);
+        fs.writeFile('out/Formatted-' + entry, outString, (err) => {
+        })
     });
 }
 

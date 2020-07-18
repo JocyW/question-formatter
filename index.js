@@ -1,6 +1,8 @@
 'use strict'
 const fs = require('fs');
 
+const debug = true;
+
 class Question {
     constructor(data = {}) {
         this.text = data.text || '';
@@ -19,14 +21,13 @@ function findQuestions(text) {
     for (rawQuestion of rawQuestions) {
         let question = new Question();
         question.text = rawQuestion[1].replace(/^\n/, '').replace(/\n$/, '')
-        debugger;
         for (let i = 2; i < 7; i++) {
             let questionText = rawQuestion[i]
 
             if (questionText) {
 
                 questionText.split(/\n/g).forEach((line) => {
-                    if (/[xX]$/g.test(line))
+                    if (/^[xX]$/g.test(line))
                         question.correct.push(i - 2);
                 });
                 question.answers.push(questionText.replace(/\n+[xX]*\n*$/, ''))
@@ -65,6 +66,12 @@ function prepareFile(text) {
     text = text.replace(/(\[\S{1,2}])/g, '')
     // Remove more than 1 newline - also convert from crlf to lf
     text = text.replace(/(\r*\n){2,}/g, '\n');
+
+    if (debug) {
+        fs.writeFile('out/debug-prepared', text, (err) => {
+        })
+    }
+
     return text;
 }
 

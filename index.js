@@ -1,6 +1,8 @@
 'use strict'
 const fs = require('fs');
 
+const debug = false;
+
 class Question {
     constructor(data = {}) {
         this.text = data.text || '';
@@ -58,6 +60,7 @@ function createOutputString(questions) {
         }
         outString += '\n\n'
     });
+    return outString;
 }
 
 function prepareFile(text) {
@@ -68,19 +71,21 @@ function prepareFile(text) {
     // Remove more than 1 newline - also convert from crlf to lf
     text = text.replace(/(\r*\n){2,}/g, '\n');
 
-    if (process.env === 'development') {
-        fs.writeFile('out/debug-prepared', text, (err) => {
-        })
-    }
-
     return text;
 }
 
 function readFile(entry) {
     fs.readFile('in/' + entry, {encoding: "utf8"}, (err, content) => {
         const prepared = prepareFile(content);
+        if (debug) {
+            fs.writeFile('out/Prepared-' + entry, prepared, (err) => {
+            })
+        }
         const questions = findQuestions(prepared);
         const outString = createOutputString(questions);
+        if (debug) {
+            console.log(questions);
+        }
         fs.writeFile('out/Formatted-' + entry, outString, (err) => {
         })
     });
@@ -99,3 +104,12 @@ fs.readdir('in', (err, list) => {
         readFile(entry);
     })
 })
+
+module.exports = {
+    findAnswers,
+    findQuestions,
+    createOutputString,
+    prepareFile,
+    readFile,
+    Question
+}

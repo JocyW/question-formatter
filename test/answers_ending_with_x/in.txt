@@ -1,0 +1,22 @@
+2.
+	Was hat für den Patienten die höchste Strahlenbelastung?
+
+
+	A
+	CT Thorax
+
+
+	B
+	CT Abdomen
+	X
+	C
+	Mammographie
+
+
+	D
+	Röntgen Thorax
+
+
+	E
+	Röntgen Abdomen
+

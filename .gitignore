@@ -2,3 +2,4 @@ in/*
 out/*
 .idea/*
 question-formatter-*
+node_modules

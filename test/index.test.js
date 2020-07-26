@@ -32,4 +32,5 @@ describe('Correct answer as last', () => testCase('correct_answer_as_last'));
 describe('Answers ending with x',() => testCase('answers_ending_with_x'));
 describe('Unused answers should be removed',() => testCase('remove_unused_answers'));
 describe('Questions can consist of multiple lines',() => testCase('question_can_have_newline'));
-describe('Whole file test',() => testCase('whole_file'))
+describe('Whole file test',() => testCase('whole_file'));
+describe('Answer C is ending in capital D',() => testCase('answer_c_ending_with_d'));

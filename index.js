@@ -30,7 +30,7 @@ function findAnswers(rawQuestion, question) {
 function findQuestions(text) {
     text = text.replace(/\r/g, '');
     let rawQuestion;
-    const regex = new RegExp('\\d+\\.([\\s\\S]*?)(?:A\\n)([\\s\\S]*?)(?:B\\n)([\\s\\S]*?)(?:C\\n)([\\s\\S]*?)(?:D\\n)([\\s\\S]*?)(?:E\\n)(\\D[\\s\\S]+?\\n([xX]\\n)?)?', 'g');
+    const regex = new RegExp('\\d+\\.([\\s\\S]*?)(?:^A\\n)([\\s\\S]*?)(?:^B\\n)([\\s\\S]*?)(?:^C\\n)([\\s\\S]*?)(?:^D\\n)([\\s\\S]*?)(?:^E\\n)(\\D[\\s\\S]+?\\n([xX]\\n)?)?', 'gm');
     const rawQuestions = text.matchAll(regex);
     const questions = [];
 
